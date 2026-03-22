@@ -1,0 +1,25 @@
+﻿apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: docker-experiments-build-config
+spec:
+  source:
+    type: Git
+    git:
+      uri: "https://github.com/TalBenZvi/Docker-Experiments.git"
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: registry.redhat.io/rhel8/dotnet-80:latest
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "docker-experiments:latest"
+  triggers:
+    - type: GitHub
+      github:
+        secretReference:
+          name: "app-github-webhook-secret"
+    - type: ConfigChange

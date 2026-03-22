@@ -1,19 +1,17 @@
-﻿apiVersion: apps/v1
-kind: Deployment
+﻿apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
 metadata:
-  name: docker-example-webapi-deployment
+  name: {{ .Values.}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: docker-example-webapi
+      app: app
   template:
     metadata:
       labels:
-        app: docker-example-webapi
+        app: app
     spec:
-      securityContext:
-        fsGroup: 1000
       containers:
         - name: webapi-container
           image: docker-experiments-webapi:0.2.1

@@ -1,0 +1,6 @@
+﻿apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: docker-experiments-image-stream
+  labels:
+    app: docker-experiments-image-stream

@@ -1,12 +1,11 @@
 ﻿apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: network-share-pvc
+  name: "{{ .Values.networkShare.id }}-pvc"
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
-  storageClassName: simulated-network-share
-  volumeName: network-share-pv
+  storageClassName: {{ .Release.Namespace }}-smb

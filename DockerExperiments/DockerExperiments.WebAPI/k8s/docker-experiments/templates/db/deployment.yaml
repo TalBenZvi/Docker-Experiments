@@ -1,0 +1,33 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.db.deploymentId }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.db.deploymentId }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.db.deploymentId }}
+    spec:
+      containers:
+        - name: {{ .Values.db.deploymentId }}
+          image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_USER
+              value: {{ .Values.db.username }}
+            - name: POSTGRESQL_PASSWORD
+              value: {{ .Values.db.password }}
+            - name: POSTGRESQL_DATABASE
+              value: {{ .Values.db.dbName }}
+          volumeMounts:
+            - name: storage
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.db.deploymentId }}-pvc

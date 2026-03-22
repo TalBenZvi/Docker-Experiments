@@ -1,0 +1,20 @@
+db:
+  deploymentId: "docker-experiments-db"
+  dbName: "DockerExperimentsDB"
+  username: "admin"
+  password: "password123"
+  serviceName: "docker-experiments-db"
+  image:
+    repository: "registry.redhat.io/rhel8/postgresql-12"
+    tag: "latest"
+    pullPolicy: "IfNotPresent"
+  size: "1Gi"
+
+networkShare:
+  id: "network-share"
+  path: "//192.168.0.111/SimulatedNetworkShare"
+  credentialsSecretName: "network-share-credentials-secret"
+  domain: "HomeBZ"
+  username: "tal"
+  password: "Tal123"
+  
