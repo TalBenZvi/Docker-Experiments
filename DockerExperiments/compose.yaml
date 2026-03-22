@@ -1,0 +1,11 @@
+﻿name: docker-experiments
+
+services:
+  docker-experiments-webapi:
+    image: docker-experiments-webapi
+    container_name: docker-experiments-webapi
+    build:
+      context: .
+      dockerfile: DockerExperiments.WebAPI/Dockerfile
+    ports:
+      - "8080:8080"

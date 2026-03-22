@@ -1,0 +1,17 @@
+﻿apiVersion: v1
+kind: Pod
+metadata:
+  name: mount-tester
+spec:
+  containers:
+    - name: mount-tester
+      image: busybox
+      command: ["sh", "-c", "echo 'OpenShift was here' > /mnt/test.txt && ls -l /mnt && cat /mnt/test.txt"]
+      volumeMounts:
+        - name: network-volume
+          mountPath: /mnt
+  volumes:
+    - name: network-volume
+      persistentVolumeClaim:
+        claimName: network-share-pvc
+  restartPolicy: Never

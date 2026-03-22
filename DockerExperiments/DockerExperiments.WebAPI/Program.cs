@@ -1,0 +1,104 @@
+using DockerExperiments.WebAPI.Config;
+using DockerExperiments.WebAPI.EfContext;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+DbConfig dbConfig = builder.Configuration.GetSection("Db").Get<DbConfig>()!;
+string dbConnectionString =
+    $"Host={dbConfig.Host};Database={dbConfig.Database};Username={dbConfig.Username};Password={dbConfig.Password}";
+DbContextOptionsBuilder<DockerExperimentsDbContext> optionsBuilder = new DbContextOptionsBuilder<DockerExperimentsDbContext>();
+optionsBuilder.UseNpgsql(dbConnectionString);
+DockerExperimentsDbContext dbContext = new DockerExperimentsDbContext(optionsBuilder.Options);
+
+builder.Services.AddHealthChecks().AddNpgSql(dbConnectionString, name: "postgres");
+
+WebApplication app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseHttpsRedirection();
+
+bool isAlive = true;
+
+app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Name == "postgres" }).WithOpenApi();
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = _ => false,
+    ResponseWriter = async (context, _) =>
+    {
+        if (isAlive)
+            await context.Response.WriteAsync("Healthy");
+        else
+        {
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync("I am frozen!");
+        }
+    }
+});
+
+app.MapGet("/items", () => dbContext.Items.ToArray()).WithName("GetItems").WithOpenApi();
+app.MapPost("/kill", () => isAlive = false).WithName("kill").WithOpenApi();
+
+List<byte[]> leak = new List<byte[]>();
+app.MapGet("/stress-memory", () => {
+    while(true) {
+        var chunk = new byte[10 * 1024 * 1024]; 
+        // Filling the array with data ensures the OS actually allocates physical RAM
+        Array.Fill(chunk, (byte)1); 
+        leak.Add(chunk);
+        
+        Console.WriteLine($"Current usage: {GC.GetTotalMemory(false) / 1024 / 1024} MB");
+        Thread.Sleep(500); 
+    }
+});
+
+app.MapGet("/stress-cpu", () =>
+{
+    int i = 0;
+    while (true)
+    {
+        Console.WriteLine(i);
+    }
+});
+
+FileStorageConfig fileStorageConfig = builder.Configuration.GetSection("FileStorage").Get<FileStorageConfig>()!;
+string fileStorageDirectoryPath = fileStorageConfig.DirectoryPath;
+if (!Directory.Exists(fileStorageDirectoryPath))
+    Directory.CreateDirectory(fileStorageDirectoryPath);
+const string storageTestFileName = "test.txt";
+string storageTestFilePath = Path.Combine(fileStorageDirectoryPath, storageTestFileName);
+
+app.MapPost("/test-storage", () =>
+{
+    if (File.Exists(storageTestFilePath))
+        File.Delete(storageTestFilePath);
+
+    File.WriteAllText(storageTestFilePath, DateTime.Now.ToLongTimeString());
+    
+    return File.ReadAllText(storageTestFilePath);
+});
+
+string fileStorageNetworkSharePath = fileStorageConfig.NetworkSharePath;
+const string networkShareTestFileName = "test.txt";
+string networkShareTestFilePath = Path.Combine(fileStorageNetworkSharePath, networkShareTestFileName);
+
+app.MapPost("/test-network-share", () =>
+{
+    if (File.Exists(networkShareTestFilePath))
+        File.Delete(networkShareTestFilePath);
+
+    File.WriteAllText(networkShareTestFilePath, DateTime.Now.ToLongTimeString());
+    
+    return File.ReadAllText(networkShareTestFilePath);
+});
+
+await dbContext.Database.MigrateAsync();
+
+app.Run();
