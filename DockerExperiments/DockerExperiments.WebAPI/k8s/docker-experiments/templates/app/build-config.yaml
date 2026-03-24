@@ -1,0 +1,25 @@
+﻿apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: {{ .Values.app.id }}-build-config
+spec:
+  source:
+    git:
+      uri: {{ .Values.app.gitSource.uri }}
+      ref: {{ .Values.app.gitSource.ref }}
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: 'dotnet:8.0-ubi8'
+        namespace: openshift
+      env:
+        - name: DOTNET_STARTUP_PROJECT
+          value: {{ .Values.app.startupProjectFile }}
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "{{ .Values.app.id }}-image-stream:latest"
+  triggers:
+    - type: ConfigChange

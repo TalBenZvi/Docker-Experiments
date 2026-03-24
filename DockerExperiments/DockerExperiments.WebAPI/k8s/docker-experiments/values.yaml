@@ -11,10 +11,18 @@ db:
   size: "1Gi"
 
 networkShare:
-  id: "network-share"
-  path: "//192.168.0.111/SimulatedNetworkShare"
-  credentialsSecretName: "network-share-credentials-secret"
-  domain: "HomeBZ"
-  username: "tal"
-  password: "Tal123"
+  storageClassName: "network-share-storage-class"
+  pvcName: "network-share-pvc"
+
+app:
+  id: "docker-experiments-app"
+  gitSource: 
+    uri: "https://github.com/TalBenZvi/Docker-Experiments.git"
+    ref: "main"
+  startupProjectFile: "DockerExperiments/DockerExperiments.WebAPI/DockerExperiments.WebAPI.csproj"
+  configPath: "/app/config"
+  workStoragePath: "/mnt/work-storage"
+  networkSharePath: "/mnt/network-share"
+  
+
   

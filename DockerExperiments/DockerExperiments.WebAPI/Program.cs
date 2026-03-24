@@ -2,9 +2,14 @@ using DockerExperiments.WebAPI.Config;
 using DockerExperiments.WebAPI.EfContext;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
+
+string configPath = Environment.GetEnvironmentVariable("CONFIG_PATH") ?? Directory.GetCurrentDirectory();
+
+builder.Configuration
+    .SetBasePath(configPath)
+    .AddJsonFile("appsettings.json");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

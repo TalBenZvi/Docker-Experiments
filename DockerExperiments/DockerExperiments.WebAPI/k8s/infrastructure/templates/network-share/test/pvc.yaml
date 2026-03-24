@@ -1,7 +1,10 @@
 ﻿apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.networkShare.pvcName }}
+  name: {{ .Values.networkShare.testPvcName }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed
 spec:
   accessModes:
     - ReadWriteMany

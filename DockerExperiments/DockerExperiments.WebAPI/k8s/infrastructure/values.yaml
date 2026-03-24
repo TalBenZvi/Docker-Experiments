@@ -1,0 +1,10 @@
+﻿networkShare:
+  id: "network-share"
+  path: "//192.168.0.111/SimulatedNetworkShare"
+  credentialsSecretName: "network-share-credentials-secret"
+  credentialsSecretNameSpace: "infrastructure"
+  domain: "HomeBZ"
+  username: "tal"
+  password: "Tal123"
+  storageClassName: "network-share-storage-class"
+  testPvcName: "network-share-test-pvc"

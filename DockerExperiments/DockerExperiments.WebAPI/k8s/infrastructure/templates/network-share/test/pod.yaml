@@ -17,4 +17,4 @@ spec:
   volumes:
     - name: smb-mount
       persistentVolumeClaim:
-        claimName: "{{ .Values.networkShare.id }}-pvc"
+        claimName: {{ .Values.networkShare.testPvcName }}

@@ -1,0 +1,40 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.id }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.app.id }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.id }}
+    spec:
+      containers:
+        - name: {{ .Values.app.id }}
+          image: "image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/{{ .Values.app.id }}-image-stream:latest"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: CONFIG_PATH
+              value: {{ .Values.app.configPath }}
+          volumeMounts:
+            - name: config
+              mountPath: {{ .Values.app.configPath }}
+              readOnly: true
+            - name: work-storage
+              mountPath: {{ .Values.app.workStoragePath }}
+            - name: network-share
+              mountPath: {{ .Values.app.networkSharePath }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.app.id }}-config
+        - name: work-storage
+          emptyDir:
+            sizeLimit: "500Mi"
+        - name: network-share
+          persistentVolumeClaim:
+            claimName: {{ .Values.networkShare.pvcName }}

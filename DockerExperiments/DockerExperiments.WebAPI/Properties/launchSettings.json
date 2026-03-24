@@ -17,12 +17,6 @@
       "applicationUrl": "http://localhost:5208",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Db__Host": "localhost",
-        "Db__Database": "DockerExperimentsDB",
-        "Db__Username": "postgres",
-        "Db__Password": "password",
-        "FileStorage__DirectoryPath": "C:\\Users\\Tal\\Documents\\Experiments\\DockerExperiments\\Storage",
-        "FileStorage__NetworkSharePath": "C:\\Users\\Tal\\Documents\\Experiments\\DockerExperiments\\DevSimulatedNetworkShare"
       }
     },
     "https": {
