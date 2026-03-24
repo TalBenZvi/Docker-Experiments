@@ -3,11 +3,15 @@ using DockerExperiments.WebAPI.EfContext;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 
+Console.WriteLine("Starting");
+
 var builder = WebApplication.CreateBuilder(args);
 
 string configFilePath = Environment.GetEnvironmentVariable("CONFIG_FILE_PATH") ?? "appsettings.json";
 
 builder.Configuration.AddJsonFile(configFilePath);
+
+Console.WriteLine("Set config");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -19,12 +23,18 @@ DbContextOptionsBuilder<DockerExperimentsDbContext> optionsBuilder = new DbConte
 optionsBuilder.UseNpgsql(dbConnectionString);
 DockerExperimentsDbContext dbContext = new DockerExperimentsDbContext(optionsBuilder.Options);
 
+Console.WriteLine("Set up db");
+
 builder.Services.AddHealthChecks().AddNpgSql(dbConnectionString, name: "postgres");
 
 WebApplication app = builder.Build();
 
+Console.WriteLine("Built app");
+
 app.UseSwagger();
 app.UseSwaggerUI();
+
+Console.WriteLine("Set up swagger");
 
 app.UseHttpsRedirection();
 
@@ -45,6 +55,8 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions
         }
     }
 });
+
+Console.WriteLine("Set up health checks");
 
 app.MapGet("/items", () => dbContext.Items.ToArray()).WithName("GetItems").WithOpenApi();
 app.MapPost("/kill", () => isAlive = false).WithName("kill").WithOpenApi();
@@ -71,6 +83,8 @@ app.MapGet("/stress-cpu", () =>
     }
 });
 
+Console.WriteLine("Set up resource endpoints");
+
 FileStorageConfig fileStorageConfig = builder.Configuration.GetSection("FileStorage").Get<FileStorageConfig>()!;
 string fileStorageDirectoryPath = fileStorageConfig.DirectoryPath;
 if (!Directory.Exists(fileStorageDirectoryPath))
@@ -88,6 +102,8 @@ app.MapPost("/test-storage", () =>
     return File.ReadAllText(storageTestFilePath);
 });
 
+Console.WriteLine("Set up storage endpoint");
+
 string fileStorageNetworkSharePath = fileStorageConfig.NetworkSharePath;
 const string networkShareTestFileName = "test.txt";
 string networkShareTestFilePath = Path.Combine(fileStorageNetworkSharePath, networkShareTestFileName);
@@ -102,6 +118,10 @@ app.MapPost("/test-network-share", () =>
     return File.ReadAllText(networkShareTestFilePath);
 });
 
+Console.WriteLine("Set up network share endpoint");
+
 await dbContext.Database.MigrateAsync();
+
+Console.WriteLine("Migrated db");
 
 app.Run();
