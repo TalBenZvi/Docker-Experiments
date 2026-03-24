@@ -21,6 +21,7 @@ app:
     ref: "main"
   startupProjectFile: "DockerExperiments/DockerExperiments.WebAPI/DockerExperiments.WebAPI.csproj"
   configPath: "/app/config"
+  configFileName: "appsettings.json"
   workStoragePath: "/mnt/work-storage"
   networkSharePath: "/mnt/network-share"
   

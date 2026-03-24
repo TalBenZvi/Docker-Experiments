@@ -18,8 +18,8 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: CONFIG_PATH
-              value: {{ .Values.app.configPath }}
+            - name: CONFIG_FILE_PATH
+              value: "{{ .Values.app.configPath }}/{{ .Values.app.configFileName }}"
           volumeMounts:
             - name: config
               mountPath: {{ .Values.app.configPath }}

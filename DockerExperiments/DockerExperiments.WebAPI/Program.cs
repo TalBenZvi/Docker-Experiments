@@ -5,11 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string configPath = Environment.GetEnvironmentVariable("CONFIG_PATH") ?? Directory.GetCurrentDirectory();
+string configFilePath = Environment.GetEnvironmentVariable("CONFIG_FILE_PATH") ?? "appsettings.json";
 
-builder.Configuration
-    .SetBasePath(configPath)
-    .AddJsonFile("appsettings.json");
+builder.Configuration.AddJsonFile(configFilePath);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
