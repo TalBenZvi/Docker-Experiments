@@ -58,7 +58,7 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions
 
 Console.WriteLine("Set up health checks");
 
-app.MapGet("/get-items", () => dbContext.Items.ToArray()).WithName("GetItems").WithOpenApi();
+app.MapGet("/items-2", () => dbContext.Items.ToArray()).WithName("GetItems").WithOpenApi();
 app.MapPost("/kill", () => isAlive = false).WithName("kill").WithOpenApi();
 
 List<byte[]> leak = new List<byte[]>();
