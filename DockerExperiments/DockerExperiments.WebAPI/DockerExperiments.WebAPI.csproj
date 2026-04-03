@@ -28,8 +28,4 @@
       <_ContentIncludedByDefault Remove="k8s\docker-experiments\templates\config\appsettings.json" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="k8s\infrastructure\templates\" />
-    </ItemGroup>
-
 </Project>
