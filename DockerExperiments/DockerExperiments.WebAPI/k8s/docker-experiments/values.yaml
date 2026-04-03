@@ -1,6 +1,6 @@
 db:
   deploymentId: "docker-experiments-db"
-  dbName: "DockerExperimentsDB-2"
+  dbName: "DockerExperimentsDB"
   username: "admin"
   password: "password123"
   serviceName: "docker-experiments-db"
