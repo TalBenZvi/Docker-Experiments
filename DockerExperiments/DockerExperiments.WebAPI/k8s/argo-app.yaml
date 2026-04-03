@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/TalBenZvi/Docker-Experiments.git
     targetRevision: main
-    path: DockerExperiments/DockerExperiments.WebAPI/k8s/docker-experiments/Chart.yaml
+    path: DockerExperiments/DockerExperiments.WebAPI/k8s/docker-experiments
     helm:
       valueFiles:
         - values.yaml
