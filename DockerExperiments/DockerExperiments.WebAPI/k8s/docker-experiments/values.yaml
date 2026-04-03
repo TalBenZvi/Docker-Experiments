@@ -19,6 +19,7 @@ app:
   gitSource: 
     uri: "https://github.com/TalBenZvi/Docker-Experiments.git"
     ref: "main"
+    cdWebhookSecretName: "cd-git-webhook-secret"
   startupProjectFile: "DockerExperiments/DockerExperiments.WebAPI/DockerExperiments.WebAPI.csproj"
   configPath: "/app/config"
   configFileName: "appsettings.json"

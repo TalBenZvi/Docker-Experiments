@@ -22,4 +22,8 @@ spec:
       kind: ImageStreamTag
       name: "{{ .Values.app.id }}-image-stream:latest"
   triggers:
+    - type: GitHub
+      github:
+        secretReference:
+          name: {{ .Values.app.gitSource.cdWebhookSecretName }}
     - type: ConfigChange
