@@ -2,6 +2,19 @@
 kind: Deployment
 metadata:
   name: {{ .Values.app.id }}
+  annotations:
+    image.openshift.io/triggers: |-
+      [
+        {
+          "from": {
+            "kind": "ImageStreamTag",
+            "name": "{{ .Values.app.id }}-image-stream:latest",
+            "namespace": "docker-experiments"
+          },
+          "fieldPath": "spec.template.spec.containers[?(@.name==\"my-container-name\")].image",
+          "pause": "false"
+        }
+      ]
 spec:
   replicas: 2
   selector:
