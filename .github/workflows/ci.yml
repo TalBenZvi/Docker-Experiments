@@ -23,4 +23,18 @@ jobs:
           context: ./DockerExperiments
           file: ./DockerExperiments/DockerExperiments.WebAPI/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:${{ github.sha }}
+
+      - name: Update Deployment Repository
+        run: |
+          git config --global user.name "gitops-bot"
+          git config --global user.email "bot@yourdomain.com"
+          
+          git clone https://${{ secrets.GITOPS_GITHUB_TOKEN }}@github.com/TalBenZvi/Docker-Experiments-Deployment.git
+          cd Docker-Experiments-Deployment/docker-experiments/templates/app
+          
+          sed -i "s|image: .*|image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:${{ github.sha }}|g" deployment.yaml
+          
+          git add deployment.yaml
+          git commit -m "Deploy: Update image to ${{ github.sha }}"
+          git push
