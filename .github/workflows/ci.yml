@@ -33,7 +33,7 @@ jobs:
           git clone https://${{ secrets.GITOPS_GITHUB_TOKEN }}@github.com/TalBenZvi/Docker-Experiments-Deployment.git
           cd Docker-Experiments-Deployment
           
-          sed -i "s|image: .*|image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:${{ github.sha }}|g" ./templates/app/deployment.yaml
+          sed -i "s|image: .*|image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:${{ github.sha }}|g" ./docker-experiments/templates/app/deployment.yaml
           
           git add deployment.yaml
           git commit -m "Deploy: Update image to ${{ github.sha }}"
