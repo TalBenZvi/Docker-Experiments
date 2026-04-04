@@ -31,9 +31,9 @@ jobs:
           git config --global user.email "bot@yourdomain.com"
           
           git clone https://${{ secrets.GITOPS_GITHUB_TOKEN }}@github.com/TalBenZvi/Docker-Experiments-Deployment.git
-          cd docker-experiments/templates/app
+          cd docker-experiments
           
-          sed -i "s|image: .*|image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:${{ github.sha }}|g" deployment.yaml
+          sed -i "s|image: .*|image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/docker-experiments:${{ github.sha }}|g" ./templates/app/deployment.yaml
           
           git add deployment.yaml
           git commit -m "Deploy: Update image to ${{ github.sha }}"
