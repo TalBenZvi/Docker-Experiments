@@ -1,7 +1,0 @@
-﻿apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Values.app.id }}-config
-data:
-  {{ .Values.app.configFileName }}: |-
-{{ tpl (.Files.Get "config/appsettings.json") . | indent 4 }}
